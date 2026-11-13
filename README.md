@@ -12,7 +12,7 @@ Works with any agent that reads the `SKILL.md` format: Claude Code, the Claude a
 **Claude Code** (all projects):
 
 ```
-git clone https://github.com/<your-username>/anti-ai-slop-web ~/.claude/skills/anti-ai-slop-web
+git clone https://github.com/ZeroXinvictus/anti-ai-slop-web ~/.claude/skills/anti-ai-slop-web
 ```
 
 For one project only, clone into `<project>/.claude/skills/anti-ai-slop-web` instead.
@@ -64,7 +64,7 @@ Skill untuk agent AI (Claude Code, aplikasi Claude, Codex, dll.) supaya website 
 - **Mode Build**: agent wajib membuat design brief dan memutuskan font, warna, struktur, ikon, dan animasi sebelum menulis kode.
 - **Mode Audit**: `scripts/scan.js` memindai kode (tanpa dependensi, Node 18+) lalu agent memperbaiki temuan berdasarkan prioritas.
 
-Install di Claude Code: `git clone https://github.com/<username-kamu>/anti-ai-slop-web ~/.claude/skills/anti-ai-slop-web`. Untuk aplikasi Claude, zip foldernya lalu unggah di bagian Skills pada pengaturan. Setelah terpasang, cukup minta: "bikinin landing page toko sepeda" atau "audit ./src, desainnya terlihat buatan AI".
+Install di Claude Code: `git clone https://github.com/ZeroXinvictus/anti-ai-slop-web ~/.claude/skills/anti-ai-slop-web`. Untuk aplikasi Claude, zip foldernya lalu unggah di bagian Skills pada pengaturan. Setelah terpasang, cukup minta: "bikinin landing page toko sepeda" atau "audit ./src, desainnya terlihat buatan AI".
 
 ## License
 
