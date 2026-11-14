@@ -1,6 +1,6 @@
 ---
 name: anti-ai-slop-web
-description: Build, redesign, or audit websites and UI so they do not look AI-generated while staying usable and accessible. Fights the "AI slop" look developers complain about - purple/indigo gradients, Inter everywhere, centered hero plus three identical rounded cards, emoji icons, glassmorphism, default shadcn/Tailwind styling, invented metrics, filler copy - and builds a real, consistent identity like well-known product companies have. Use this skill whenever the user asks for a landing page, website, dashboard, portfolio, company profile, SaaS page, web app UI, theme, redesign, design system, or "make it look professional/premium/expensive/custom", and whenever they say a design looks generic, templated, vibe-coded, or AI-made, even if they never mention slop. Also use it to scan an existing codebase for AI tells before shipping.
+description: Build, redesign, or audit websites and UI so they do not look AI-generated while staying usable and accessible. Fights the "AI slop" look developers complain about (purple gradients, Inter everywhere, centered hero plus three identical cards, emoji icons, glassmorphism, default shadcn/Tailwind, invented metrics, filler copy) and builds a consistent identity like well-known product companies have. Use whenever the user asks for a landing page, website, dashboard, portfolio, company profile, SaaS page, web app UI, theme, redesign, design system, or "make it look professional/premium/expensive/custom", or says a design looks generic, templated, vibe-coded or AI-made, even without mentioning slop. Juga untuk bikin/bikinin website atau landing page, "kok kayak buatan AI", "terlalu generik", "biar keliatan mahal/profesional/beda". Also scans codebases for AI tells before shipping.
 ---
 
 # Anti AI Slop Web
@@ -31,7 +31,7 @@ Skills that ban things tend to make models rigid, so the output swaps one defaul
 ## Pick a mode
 
 - **Build**: new page, app UI, or theme. Follow "Build workflow".
-- **Retrofit**: existing project to be made less generic. Start with an audit, then change tokens and the worst offenders. Follow "Audit workflow" then step 3 onward of build.
+- **Retrofit**: existing project to be made less generic. Start with an audit, then change tokens and the worst offenders. Follow "Audit workflow" then step 3 onward of build. For Tailwind, shadcn/ui, Next.js, Vue, Svelte, Astro or a component library, read `references/frameworks.md` first.
 - **Audit**: only a review was asked. Follow "Audit workflow" and report.
 - When unclear, build first, then audit your own output.
 
@@ -77,7 +77,7 @@ Filler is a tell as strong as the gradient. Avoid "Elevate your workflow", "Unlo
 1. Run the scanner (below). Resolve critical and high findings or justify each in one line.
 2. Swap test: replace the product name with a competitor's. If the page still works unchanged, the specific truth is missing.
 3. Blind test: cover the logo. Is the brand still recognizable by type, color and structure?
-4. View the result at 360px and at desktop width. Open the page and look; reading source does not catch overflow in tables and code blocks.
+4. View the result at 360px and at desktop width: run `node scripts/check-render.js <page>` when Playwright is available, and open the screenshots and look. Reading source does not catch overflow in tables and code blocks.
 5. Tab through the page. Focus must be visible and order sensible.
 6. Contrast at least 4.5:1 for text (3:1 large text and UI parts).
 7. Read every visible string as a visitor. Nothing may describe the page itself, its placeholders, or what "will go here". Markers stay small and sit where the fact belongs.
@@ -105,11 +105,26 @@ node scripts/scan.js . --fail-over 40
 
 Bands: 0-19 distinctive, 20-49 some defaults present, 50+ reads as AI-generated. `--fail-over N` exits 1 when the score exceeds N, for CI. Some rules (grid-cols-3, rounded-2xl, uppercase labels) only mean something in combination; treat a lone hit as a prompt to look, not a defect.
 
+Besides visual tells it checks process and accessibility signals: copy that describes the page itself (`meta-copy`), lorem ipsum, images without alt, generic CTA labels, removed focus outlines, a missing viewport tag, animation with no `prefers-reduced-motion` anywhere in the project, hover styles with no focus styles, and many hardcoded hex colors outside tokens. Project-level findings are reported once per project.
+
+## Render check
+
+`scripts/check-render.js` opens a page in headless Chromium and reports what source scanning cannot: horizontal overflow, text under WCAG contrast (4.5:1, or 3:1 for large text), interactive elements under 24 by 24 CSS pixels, h1 count, images without alt, and unlabeled inputs. It needs Playwright; without it the script says so and exits, and you inspect the page by hand at 360px and 1280px instead.
+
+```
+node scripts/check-render.js ./index.html
+node scripts/check-render.js http://localhost:3000 --shots ./shots
+```
+
+For a file path it blocks non-file network requests, so fonts from a CDN fall back during the check; judge typography from the code and from a render with fonts available. Small targets are advisory: WCAG 2.2 allows exceptions for spacing and inline links. Run it before reporting and fix overflow and contrast findings.
+
 ## Where to read more
 
 - `references/specification.md`: the checkable standard (MUST, SHOULD, MAY) for finishing and scoring. Read it at the self-check step.
 - `references/tells-catalog.md`: each tell with why it happens, detection signal and fix. Read it during audits and when the scanner reports something unfamiliar.
 - `references/big-company-identity.md`: research on how well-known product companies build identity, transferable moves, and what not to copy. Read it at the brief stage, or when asked to look "premium" or "like a real company".
+- `references/frameworks.md`: where the defaults live in Tailwind, shadcn/ui, Next.js fonts, other component libraries and Vue, Svelte, Astro, and the retrofit order for framework projects. Read it before touching a framework project.
+- `evals/`: four test cases (build, brand-constrained build, plain-HTML retrofit, Next.js retrofit) with graders, in the layout `claude plugin eval` reads. Use them to check that changes to this skill do not make results worse.
 - `references/directions.md`: varied aesthetic seeds, fonts and a color method. Read it at step 2. Treat entries as seeds to vary; picking the same entry every time is just a new default.
 - `references/sources.md`: where the patterns were collected.
 
