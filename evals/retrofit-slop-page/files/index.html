@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Flowbase</title>
+<style>
+body{margin:0;font-family:Inter,sans-serif;color:#111}
+.hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;text-align:center;padding:96px 24px}
+.hero h1{font-size:56px;margin:0 0 16px}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);padding:6px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:.1em;font-size:12px;margin-bottom:20px}
+.btn{background:#fff;color:#6366f1;padding:14px 28px;border-radius:16px;text-decoration:none;font-weight:600;box-shadow:0 0 30px rgba(139,92,246,.6)}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:64px 24px;max-width:1000px;margin:0 auto}
+.card{border-radius:24px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.1);text-align:center}
+.card:hover{transform:translateY(-6px)}
+.stats{text-align:center;padding:48px;background:#f9fafb}
+form{max-width:420px;margin:48px auto;display:grid;gap:12px;padding:0 24px}
+input{padding:12px;border:1px solid #ccc;border-radius:12px}
+button{padding:12px;border:0;border-radius:12px;background:#6366f1;color:#fff}
+</style></head><body>
+<!-- Hero -->
+<section class="hero"><span class="badge">New · Now with AI</span><h1>Unlock the power of your workflow</h1><p>Flowbase helps teams collaborate seamlessly and ship faster than ever.</p><a class="btn" href="#signup">Get Started</a></section>
+<!-- Features -->
+<section class="features">
+<div class="card"><div style="font-size:40px">🚀</div><h3>Lightning fast</h3><p>Supercharge your team with blazing speed.</p></div>
+<div class="card"><div style="font-size:40px">🔒</div><h3>Secure by default</h3><p>Enterprise-grade security you can trust.</p></div>
+<div class="card"><div style="font-size:40px">✨</div><h3>AI powered</h3><p>Let AI do the heavy lifting for you.</p></div>
+</section>
+<section class="stats"><h2>Trusted by 10,000+ teams</h2><p>99.9% uptime · 10x faster than the competition</p></section>
+<form id="signup" onsubmit="event.preventDefault();document.getElementById('ok').hidden=false">
+<label for="e">Work email</label><input id="e" type="email" required><button type="submit">Get Started</button><p id="ok" hidden>Thanks, we will be in touch.</p></form>
+</body></html>
