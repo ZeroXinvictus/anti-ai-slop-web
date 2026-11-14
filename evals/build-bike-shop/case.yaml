@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: build-bike-shop
+expected_outcome: |
+  A distinctive, usable Indonesian landing page with visible markers for unknown prices and hours, a working WhatsApp booking path, and no invented facts.
