@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: retrofit-slop-page
+expected_outcome: |
+  A retrofitted page with its own identity, the signup form still working, invented metrics removed, and no copy that talks about the page itself.
+context:
+  scaffold_script: place-files.sh
