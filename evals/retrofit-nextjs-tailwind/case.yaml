@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: retrofit-nextjs-tailwind
+expected_outcome: |
+  A Next.js retrofit that changes the token and font layer, not only individual components, and removes the generic tells without inventing facts.
+context:
+  scaffold_script: place-files.sh
