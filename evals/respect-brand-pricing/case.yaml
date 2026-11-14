@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: respect-brand-pricing
+expected_outcome: |
+  A pricing page that keeps the mandated font and purple, is distinctive through structure rather than by overriding the brand, and shows undecided prices as markers.
