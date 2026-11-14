@@ -121,6 +121,69 @@ const RULES = [
     fix: 'Use a real figure or a visible placeholder'
   },
   {
+    id: 'meta-copy',
+    tier: 'high',
+    pattern: /\b(?:goes here|go here|once it exists|once (?:we|there) (?:have|are)|your (?:headline|text|content|tagline|tagline) here|what the page (?:promises|says)|things (?:we|\w+) says? (?:it|we) does?)\b/i,
+    message: 'Visitor-facing copy that describes the page itself',
+    fix: 'Write the copy as final; keep a small marker where a fact is missing and explain gaps in the report'
+  },
+  {
+    id: 'lorem-ipsum',
+    tier: 'high',
+    pattern: /lorem ipsum|dolor sit amet/i,
+    message: 'Lorem ipsum filler',
+    fix: 'Write real copy or a short honest marker'
+  },
+  {
+    id: 'img-no-alt',
+    tier: 'high',
+    pattern: /<img\b(?![^>]*\balt\s*=)[^>]*>/i,
+    message: 'Image without alt attribute',
+    fix: 'Add meaningful alt text, or alt="" for decorative images'
+  },
+  {
+    id: 'generic-cta',
+    tier: 'medium',
+    pattern: />\s*(?:Get Started|Learn More|Click Here|Read More)\s*</i,
+    message: 'Generic call-to-action label',
+    fix: 'Say what happens next, such as "Book a slot" or "See the price list"'
+  },
+  {
+    id: 'outline-removed',
+    tier: 'medium',
+    pattern: /outline\s*:\s*(?:none|0)\b|\boutline-none\b/,
+    message: 'Focus outline removed',
+    fix: 'Provide a visible :focus-visible replacement'
+  },
+  {
+    id: 'no-viewport',
+    tier: 'high',
+    pattern: /(?!)/,
+    message: 'HTML document without a viewport meta tag',
+    fix: 'Add <meta name="viewport" content="width=device-width,initial-scale=1">'
+  },
+  {
+    id: 'no-reduced-motion',
+    tier: 'medium',
+    pattern: /(?!)/,
+    message: 'Animations or transitions but no prefers-reduced-motion handling anywhere',
+    fix: 'Add a prefers-reduced-motion block that disables non-essential motion'
+  },
+  {
+    id: 'no-focus-style',
+    tier: 'medium',
+    pattern: /(?!)/,
+    message: 'Hover styles but no focus styles anywhere',
+    fix: 'Mirror interactive hover styles with :focus-visible'
+  },
+  {
+    id: 'hardcoded-colors',
+    tier: 'medium',
+    pattern: /(?!)/,
+    message: 'Many hex colors written outside token definitions',
+    fix: 'Move colors into variables or the theme file and reference them'
+  },
+  {
     id: 'section-comment',
     tier: 'medium',
     pattern: /<!--\s*(?:Hero|Features?|Testimonials?|Pricing|CTA|Footer|Navbar|Header)(?:\s+Section)?\s*-->|\{\/\*\s*(?:Hero|Features?|Testimonials?|Pricing|CTA|Footer)(?:\s+Section)?\s*\*\/\}/i,
@@ -188,6 +251,43 @@ function scanFile(file) {
   return findings
 }
 
+const MOTION_PATTERN = /@keyframes|\banimation\s*:|\btransition\s*:/
+const REDUCED_PATTERN = /prefers-reduced-motion|motion-reduce:|motion-safe:/
+const HOVER_PATTERN = /:hover|\bhover:/
+const FOCUS_PATTERN = /:focus-visible|\bfocus-visible:|:focus\b|\bfocus:/
+const HEX_LINE_PATTERN = /(?:^|[\s:(,])#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/
+const TOKEN_LINE_PATTERN = /--[\w-]+\s*:/
+const HEX_LINE_LIMIT = 15
+
+function projectFinding(file, line, rule, excerpt) {
+  const definition = ruleById(rule)
+  return { file, line, rule, tier: definition.tier, message: definition.message, excerpt }
+}
+
+function projectChecks(files) {
+  const found = []
+  const flags = { motion: null, reduced: false, hover: null, focus: false }
+  for (const file of files) {
+    if (fs.statSync(file).size > MAX_FILE_BYTES) continue
+    const text = fs.readFileSync(file, 'utf8')
+    if (MOTION_PATTERN.test(text) && !flags.motion) flags.motion = file
+    if (REDUCED_PATTERN.test(text)) flags.reduced = true
+    if (HOVER_PATTERN.test(text) && !flags.hover) flags.hover = file
+    if (FOCUS_PATTERN.test(text)) flags.focus = true
+    const framesViewport = /(?:^|[\\/])layout\.(?:jsx|tsx|js|ts)$/.test(file) || /export\s+(?:const\s+viewport|(?:async\s+)?function\s+generateViewport)/.test(text)
+    if (/<html[\s>]/i.test(text) && !framesViewport && !/<meta[^>]+name=["']viewport["']/i.test(text)) {
+      found.push(projectFinding(file, 1, 'no-viewport', '<html> without viewport meta'))
+    }
+    const hexLines = text.split(/\r?\n/).filter((line) => HEX_LINE_PATTERN.test(line) && !TOKEN_LINE_PATTERN.test(line)).length
+    if (hexLines > HEX_LINE_LIMIT) {
+      found.push(projectFinding(file, 1, 'hardcoded-colors', `${hexLines} lines with hex colors outside variable definitions`))
+    }
+  }
+  if (flags.motion && !flags.reduced) found.push(projectFinding(flags.motion, 1, 'no-reduced-motion', 'motion found, no prefers-reduced-motion in project'))
+  if (flags.hover && !flags.focus) found.push(projectFinding(flags.hover, 1, 'no-focus-style', 'hover found, no focus styles in project'))
+  return found
+}
+
 function summarize(findings) {
   const byRule = new Map()
   for (const finding of findings) {
@@ -235,7 +335,7 @@ function main() {
     return 0
   }
   const files = options.targets.reduce((found, target) => collectFiles(target, found), [])
-  const findings = files.flatMap(scanFile)
+  const findings = files.flatMap(scanFile).concat(projectChecks(files))
   const summary = summarize(findings)
   if (options.json) {
     console.log(JSON.stringify({ files: files.length, score: summary.score, band: band(summary.score), summary: summary.rows, findings }, null, 2))
