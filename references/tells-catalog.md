@@ -2,7 +2,7 @@
 
 Each entry: what it is, why models produce it, how to detect it, how to fix it. Priority tiers match the scanner (critical, high, medium). Rule ids in backticks are the scanner's.
 
-Contents: Color, Typography, Layout, Surface and effects, Icons, Motion, Copy and content, Stack fingerprints, What is not a tell.
+Contents: Color, Typography, Layout, Surface and effects, Icons, Motion, Copy and content, Stack fingerprints, Finish and accessibility, What is not a tell.
 
 ## Color
 
@@ -106,6 +106,32 @@ Zinc/slate palette, default radius, default Card. Fix: keep the primitives if us
 
 **Default Tailwind blue-600 buttons** (manual)
 Fix: theme the brand color and use it.
+
+## Finish and accessibility
+
+**Copy that describes the page itself** (`meta-copy`, high)
+Headings or sentences such as "Proof goes here once it exists", "What the page promises", "We will publish numbers here once we have real ones". It appears when a model over-applies "do not invent facts" and narrates the gap to visitors. Fix: keep a small marker where the fact belongs, write the surrounding copy as final, and explain gaps in the report; if a section would be mostly markers, cut it.
+
+**Lorem ipsum** (`lorem-ipsum`, high)
+Fix: real copy or a short honest marker.
+
+**Image without alt** (`img-no-alt`, high)
+Fix: meaningful alt text, or empty alt for decorative images.
+
+**Generic CTA label** (`generic-cta`, medium)
+"Get Started", "Learn More", "Click Here" as the only label. Fix: say what happens next.
+
+**Focus outline removed, hover without focus** (`outline-removed`, `no-focus-style`, medium)
+Keyboard users lose their place. Fix: a visible `:focus-visible` style that mirrors hover.
+
+**Motion with no reduced-motion handling** (`no-reduced-motion`, medium)
+Fix: a `prefers-reduced-motion` block that disables non-essential motion.
+
+**No viewport meta tag** (`no-viewport`, high)
+Not reported for Next.js layout files, which inject a default viewport. Fix: add the meta tag.
+
+**Hardcoded colors outside tokens** (`hardcoded-colors`, medium)
+More than fifteen lines with hex values outside variable definitions. Fix: move colors into tokens.
 
 ## What is not a tell
 
